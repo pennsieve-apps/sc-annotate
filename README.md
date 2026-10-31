@@ -181,15 +181,22 @@ conditions on them with care.
 
 **Reference mode, atlas split** (Discover 480; 8 donors, 4 per half, at most 3,000 nuclei per
 sample; a stand-in for sc-qc/sc-integrate from `tests/make_fixture.py --from-cellranger`): half A
-was annotated with `drg-human` markers, its `model/` linked as the reference of half B (10,046
-nuclei), and the transferred labels compared with half B's own marker labels. Half A's reference
-held 10 types (A-beta LTMR, SST+ pruritogen receptor and eight non-neuronal types; the other
-neuron subtypes were not called in half A, so cannot be transferred). On the 8,001 half-B nuclei
-whose marker label is one of those 10 types: scANVI agreed on 72.9 % (0.8 % `Unassigned`
-overall), CellTypist on 50.8 % with 40.4 % `Unassigned`, and 76.8 % of the nuclei CellTypist did
-label. Most disagreement is between the neighbouring stromal / glial types (satellite glia vs
-non-myelinating Schwann, fibroblast vs macrophage in low-quality clusters), where the marker calls
-themselves are cluster-level. This measures consistency between the two modes, not accuracy.
+(10,975 nuclei) was annotated with `drg-human` markers, its `model/` linked as the reference of
+half B (10,046 nuclei), and the transferred labels compared with half B's own marker labels. Half
+A's reference held 11 types: Neuron, A-beta LTMR, SST+ pruritogen receptor and eight non-neuronal
+types (the other neuron subtypes were not called in half A, so they cannot be transferred).
+
+| | scANVI | CellTypist |
+|---|---|---|
+| `Unassigned` (MIN_SCORE 0.5) | 1.3 % | 36.5 % |
+| Same label, of the 8,001 nuclei whose marker label is a reference type | 65.7 % | 44.4 % (76.7 % of those it labelled) |
+| Same broad class (neuron subtypes pooled), both labelled | 71.3 % (n = 9,127) | 80.7 % (n = 5,747) |
+
+The main disagreements: satellite glia (markers) vs non-myelinating Schwann cells (transfer),
+neuron subtypes absent from the reference transferred as `Neuron` (consistent, coarser), and NP
+nociceptors transferred as the related SST+ pruritogen receptors. CellTypist leaves the uncertain
+nuclei `Unassigned`; scANVI labels nearly all. This measures the consistency of the two modes on
+one tissue, not accuracy against an expert annotation.
 
 **Synthetic fixture** (`tests/make_fixture.py`: 3 samples, 6 planted types): markers 100 %,
 CellTypist 95.9 %, scANVI 98.7 % of nuclei get their planted type; the scANVI model reused as a
@@ -204,13 +211,14 @@ Measured in the linux/amd64 cpu image under emulation on an M-series Mac (Docker
 |---|---|---|---|
 | markers, C2 DRG, 18,082 genes | 18,439 | 37 s | 1.36 GB |
 | CellTypist, atlas split (8,468 reference nuclei) | 10,046 | 63 s | 3.56 GB |
-| scANVI, atlas split (400 + 20 + 100 epochs; native arm64, 4 threads) | 10,046 | 549 s | 1.63 GB (process RSS) |
+| scANVI, atlas split (400 + 20 + 100 epochs, 8,468 reference nuclei) | 10,046 | 1,192 s | 1.62 GB |
+| the same, native arm64 (4 threads, no Docker) | 10,046 | 605 s | 1.45 GB (process RSS) |
 
 Memory: markers mode holds one sample plus a nuclei × sets score table; reference mode holds the
 reference subsample (`MAX_CELLS_PER_TYPE` × types, all genes, CSR) and, for scANVI, the query's
 counts on 3,000 genes (about 1 GB per 100,000 nuclei). CellTypist densifies the reference
 subsample on the 3,000 genes for training (8 bytes × cells × 3,000: 1.4 GB for 60,000 cells).
-`runtime.memory` is 16 GiB, enough for 300,000 query nuclei with a 40-type reference. On a CPU,
+Images: cpu 2.1 GB (0.46 GB compressed), gpu 9.5 GB (the CUDA libraries). `runtime.memory` is 16 GiB, enough for 300,000 query nuclei with a 40-type reference. On a CPU,
 scANVI takes minutes per 10,000 nuclei and epoch count; use the gpu variant for large data.
 
 ## GPU variant
