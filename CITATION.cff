@@ -473,6 +473,7 @@ references:
     given-names: Sanjay M.
   - family-names: Wadsworth
     given-names: Marc H.
+    name-suffix: '2nd'
   - family-names: Treacy
     given-names: Daniel
   - family-names: Trombetta
@@ -780,6 +781,7 @@ references:
     given-names: 'Patrick M.'
   - family-names: 'Gereau'
     given-names: 'Robert W.'
+    name-suffix: '4th'
   - family-names: 'Burton'
     given-names: 'Michael D.'
   - family-names: 'Dussor'
@@ -857,7 +859,9 @@ references:
     given-names: 'Jessica L.'
   - family-names: 'Price'
     given-names: 'Theodore J.'
-  - family-names: 'Robert W. Gereau IV'
+  - family-names: 'Gereau'
+    given-names: 'Robert W.'
+    name-suffix: 'IV'
   - family-names: 'Renthal'
     given-names: 'William'
   year: 2024
@@ -891,6 +895,7 @@ references:
     given-names: 'Amy M.'
   - family-names: 'Gereau'
     given-names: 'Robert W.'
+    name-suffix: '4th'
   - family-names: 'Cavalli'
     given-names: 'Valeria'
   year: 2022
@@ -1026,6 +1031,7 @@ references:
     given-names: 'David L.'
   - family-names: 'Mandelin'
     given-names: 'Arthur M.'
+    name-suffix: '2nd'
   - name: 'Accelerating Medicines Partnership Rheumatoid Arthritis and Systemic Lupus Erythematosus (AMP RA/SLE) Consortium'
   - family-names: 'Boyce'
     given-names: 'Brendan F.'

@@ -19,6 +19,7 @@ sparse, so per-cell calls among many related subtypes disagree even in a clean c
 from __future__ import annotations
 
 import csv
+import io
 import logging
 import re
 from dataclasses import dataclass, field
@@ -47,41 +48,39 @@ def builtin_names() -> list[str]:
     return sorted(p.stem for p in BUILTIN_DIR.glob("*.csv"))
 
 
-def read_markers_csv(path: Path) -> list[MarkerSet]:
+def read_markers_csv(text: str, name: str = "markers.csv") -> list[MarkerSet]:
     """cell_type, gene[, weight]: one gene per row; extra columns (e.g. source) are ignored."""
-    if path.stat().st_size > MAX_MARKERS_BYTES:
-        raise ValueError(f"{path.name} is larger than {MAX_MARKERS_BYTES // 2**20} MB")
-    with open(path, newline="", encoding="utf-8-sig") as fh:
-        reader = csv.DictReader(fh)
-        cols = {c.strip().lower(): c for c in (reader.fieldnames or []) if c}
-        if "cell_type" not in cols or "gene" not in cols:
-            raise ValueError(f"{path.name}: needs the columns cell_type and gene (and optionally weight); found {list(cols)}")
-        sets: dict[str, dict[str, float]] = {}
-        for i, row in enumerate(reader, start=2):
-            ct = re.sub(r"\s+", " ", SAFE.sub("", row[cols["cell_type"]] or "")).strip()
-            gene = (row[cols["gene"]] or "").strip()
-            if not ct or not gene:
-                continue
-            raw = (row.get(cols["weight"]) or "").strip() if "weight" in cols else ""
-            try:
-                w = float(raw) if raw else 1.0
-            except ValueError as exc:
-                raise ValueError(f"{path.name} line {i}: weight {raw!r} is not a number") from exc
-            if not np.isfinite(w):
-                raise ValueError(f"{path.name} line {i}: weight must be finite")
-            if w != 0:
-                sets.setdefault(ct, {})[gene] = w
+    reader = csv.DictReader(io.StringIO(text, newline=""))
+    cols = {c.strip().lower(): c for c in (reader.fieldnames or []) if c}
+    if "cell_type" not in cols or "gene" not in cols:
+        raise ValueError(f"{name}: needs the columns cell_type and gene (and optionally weight); found {list(cols)}")
+    sets: dict[str, dict[str, float]] = {}
+    for i, row in enumerate(reader, start=2):
+        ct = re.sub(r"\s+", " ", SAFE.sub("", row[cols["cell_type"]] or "")).strip()
+        gene = (row[cols["gene"]] or "").strip()
+        if not ct or not gene:
+            continue
+        raw = (row.get(cols["weight"]) or "").strip() if "weight" in cols else ""
+        try:
+            w = float(raw) if raw else 1.0
+        except ValueError as exc:
+            raise ValueError(f"{name} line {i}: weight {raw!r} is not a number") from exc
+        if not np.isfinite(w):
+            raise ValueError(f"{name} line {i}: weight must be finite")
+        if w != 0:
+            sets.setdefault(ct, {})[gene] = w
     out = [MarkerSet(ct, w) for ct, w in sets.items() if any(v > 0 for v in w.values())]
     if not out:
-        raise ValueError(f"{path.name}: no cell type with a positively weighted gene")
+        raise ValueError(f"{name}: no cell type with a positively weighted gene")
     return out
 
 
-def load_sets(marker_set: str, markers_csv: Path | None) -> tuple[list[MarkerSet], str]:
-    """A linked markers.csv wins over MARKER_SET; else the built-in table MARKER_SET names."""
+def load_sets(marker_set: str, markers_csv: Path | None, inp) -> tuple[list[MarkerSet], str]:
+    """A linked markers.csv (read capped through the input checks) wins over MARKER_SET; else the
+    built-in table MARKER_SET names."""
     if markers_csv is not None:
-        return read_markers_csv(markers_csv), "markers.csv"
-    return read_markers_csv(BUILTIN_DIR / f"{marker_set}.csv"), f"builtin:{marker_set}"
+        return read_markers_csv(inp.read_text(markers_csv, MAX_MARKERS_BYTES)), "markers.csv"
+    return read_markers_csv((BUILTIN_DIR / f"{marker_set}.csv").read_text(), f"{marker_set}.csv"), f"builtin:{marker_set}"
 
 
 def resolve(sets: list[MarkerSet], var_names, min_genes: int) -> tuple[list[MarkerSet], list[MarkerSet]]:

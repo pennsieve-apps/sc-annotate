@@ -3,8 +3,9 @@
 This app is Apache-2.0 (see `LICENSE`). The images it builds contain the following third-party
 components, installed from PyPI at the pinned versions in `requirements.txt` (and
 `requirements-cpu.txt` / `requirements-cuda.txt`); their licences apply to the images. Each
-licence was read in the project's own LICENSE file at the pinned tag. **Nothing in the images is
-GPL**: celltypist declares `leidenalg` (GPL-3.0-or-later) and `igraph` (GPL-2.0) for its
+licence was read in the project's own LICENSE file at the pinned tag. **No GPL Python packages**
+are installed (the Debian base layer contains GPL system tools, as every Debian image does):
+celltypist declares `leidenalg` (GPL-3.0-or-later) and `igraph` (GPL-2.0) for its
 over-clustering, which this app never runs, so they (and igraph's `texttable`) are not installed
 (`pip install --no-deps`). They are in `requirements-dev.txt` only, for the real-data stand-in in
 `tests/make_fixture.py`, which is not part of the images.
@@ -13,8 +14,8 @@ over-clustering, which this app never runs, so they (and igraph's `texttable`) a
 |---|---|---|---|
 | scvi-tools 1.5.2 | scVI, scANVI, scArches query mapping (reference mode, `METHOD=scanvi`). Called as a library. | BSD-3-Clause | https://github.com/scverse/scvi-tools |
 | celltypist 1.7.1 | `celltypist.train` / `celltypist.annotate` (reference mode, `METHOD=celltypist`). Code only: **no pretrained model is bundled or downloaded**. | MIT | https://github.com/Teichlab/celltypist |
-| PyTorch 2.15.0 (cpu variant: `+cpu` build; gpu variant: CUDA 13.2 build with triton 3.9.0) | Tensor computation for scvi-tools. | BSD-3-Clause style (bundle: Apache-2.0, BSD, MIT, ...); triton MIT | https://pytorch.org |
-| nvidia-cublas, -cuda-runtime, -cudnn-cu13, -cufft, -cusolver, -cusparse, -cusparselt-cu13, -nccl-cu13, -nvjitlink, -nvshmem-cu13, -nvtx, -cuda-nvrtc, -cuda-cupti, -cuda-cccl, -cufile; cuda-toolkit 13.2.2, cuda-bindings 13.4.4, cuda-pathfinder 1.8.5 | gpu variant only: CUDA runtime libraries. | NVIDIA proprietary, redistributable (licence in each wheel); cuda-bindings/pathfinder Apache-2.0 | https://developer.nvidia.com/cuda-toolkit |
+| PyTorch 2.14.1 (cpu variant: `+cpu` build; gpu variant: `+cu126` build with triton 3.8.0) | Tensor computation for scvi-tools. | BSD-3-Clause style (bundle: Apache-2.0, BSD, MIT, ...); triton MIT | https://pytorch.org |
+| nvidia-cublas-cu12, -cuda-runtime-cu12, -cudnn-cu12, -cufft-cu12, -curand-cu12, -cusolver-cu12, -cusparse-cu12, -cusparselt-cu12, -nccl-cu12, -nvjitlink-cu12, -nvshmem-cu12, -nvtx-cu12, -cuda-nvrtc-cu12, -cuda-cupti-cu12, -cufile-cu12; cuda-toolkit 12.6.3, cuda-bindings 12.9.10, cuda-pathfinder 1.8.5 (versions in `requirements-cuda.txt`) | gpu variant only: CUDA 12.6 runtime libraries. | NVIDIA proprietary, redistributable (licence in each wheel); cuda-bindings/pathfinder Apache-2.0 | https://developer.nvidia.com/cuda-toolkit |
 | Pyro 1.9.2 (pyro-ppl, pyro-api 0.1.2) | Dependency of scvi-tools. | Apache-2.0 | https://github.com/pyro-ppl/pyro |
 | Lightning 2.6.6 (lightning, pytorch-lightning, lightning-utilities 0.15.3, torchmetrics 1.9.0) | Training loop of scvi-tools. | Apache-2.0 | https://github.com/Lightning-AI/pytorch-lightning |
 | scanpy 1.12.5 | Normalization, `highly_variable_genes`, `score_genes`. | BSD-3-Clause | https://github.com/scverse/scanpy |
@@ -27,13 +28,14 @@ over-clustering, which this app never runs, so they (and igraph's `texttable`) a
 | xarray, sparse, ml_collections, docrep, rich, tensorboard (+ tensorboard-data-server, absl-py, grpcio, protobuf, Markdown, Werkzeug), pydantic (+ pydantic-core, pydantic-settings, annotated-types, typing-inspection, python-dotenv), formulaic, interface_meta, narwhals, msgspec, opt_einsum, cloudpickle, fsspec, aiohttp (+ aiosignal, aiohappyeyeballs, frozenlist, multidict, propcache, yarl, attrs), Jinja2, MarkupSafe, sympy, mpmath, networkx, filelock, setuptools | Dependencies of scvi-tools, torch and Lightning (versions in `requirements.txt`). | Apache-2.0 / BSD / MIT | PyPI |
 | numba, llvmlite, umap-learn, pynndescent, statsmodels, patsy, seaborn, joblib, threadpoolctl, natsort, fast-array-utils, legacy-api-wrap, session-info2, scverse-misc, zarr, numcodecs, donfig, google-crc32c, array-api-compat | Dependencies of scanpy / anndata. | BSD-2/3-Clause, MIT, Apache-2.0, MPL-2.0 | PyPI |
 | contourpy, cycler, fonttools, kiwisolver, packaging, pyparsing, python-dateutil, six, tqdm, typing_extensions, tzdata, wrapt, PyYAML, Pygments, markdown-it-py, mdurl | Dependencies of the above. | MIT / BSD / Apache-2.0 / MPL-2.0+MIT (tqdm) / PSF-2.0 | PyPI |
-| python:3.12.16-slim-bookworm | Base image (Debian 12 + CPython 3.12). | PSF (Python); Debian packages under their own free licences | https://hub.docker.com/_/python |
+| python:3.12.16-slim-bookworm (index digest `sha256:e697c818…d337`) | Base image (Debian 12 + CPython 3.12). | PSF (Python); Debian packages under their own free licences | https://hub.docker.com/_/python |
 
 ## Bundled data: built-in marker sets
 
 `processor/markers/{drg-human,knee-human,broad}.csv` list cell type names and HGNC gene symbols
-(facts taken from published tables and text, with the source per gene); no text, figure or table
-of the articles is reproduced.
+(facts taken from published tables and text, with the source per gene); the per-gene evidence is
+in `markers-evidence/` (not in the image). No figure or table of the articles is reproduced; the
+evidence files quote single table rows and sentences to identify the support.
 
 | Set | Source articles (licence of the article) |
 |---|---|

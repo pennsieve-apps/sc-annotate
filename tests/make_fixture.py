@@ -99,7 +99,8 @@ def write_reference(path: Path, rng, genes, ids, programs, n=1200) -> None:
                        index=[f"ref{i}" for i in range(n)])
     var = pd.DataFrame({"feature_name": genes}, index=ids)
     path.parent.mkdir(parents=True, exist_ok=True)
-    ad.AnnData(X=sp.csr_matrix(counts), obs=obs, var=var).write_h5ad(path)
+    ad.AnnData(X=sp.csr_matrix(counts), obs=obs, var=var,
+               uns={"title": "Synthetic reference", "citation": "sc-annotate test fixture"}).write_h5ad(path)
 
 
 def write_markers(path: Path, sets: dict[str, list[str]] | None = None, weights: bool = False) -> Path:

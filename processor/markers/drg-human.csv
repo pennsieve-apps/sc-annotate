@@ -2,7 +2,6 @@ cell_type,gene,source
 Neuron,SNAP25,bhuiyan-2024
 Neuron,RBFOX3,bhuiyan-2024
 Proprioceptor (PVALB+),PVALB,tavares-ferreira-2022
-Proprioceptor (PVALB+),MCTP2,bhuiyan-2024
 Proprioceptor (PVALB+),NXPH1,bhuiyan-2024
 Proprioceptor (PVALB+),ZNF385B,bhuiyan-2024
 Proprioceptor (PVALB+),RUNX3,tavares-ferreira-2022
@@ -13,7 +12,6 @@ A-beta LTMR (NTRK3-high),HSPB7,bhuiyan-2024
 A-beta LTMR (NTRK3-high),NRGN,bhuiyan-2024
 A-beta LTMR (NTRK3-high),KCNN1,bhuiyan-2024
 A-delta LTMR (NTRK2+),KCNV1,bhuiyan-2024
-A-delta LTMR (NTRK2+),CCND2,bhuiyan-2024
 A-delta LTMR (NTRK2+),CBLN2,bhuiyan-2024
 A-delta LTMR (NTRK2+),DCHS2,bhuiyan-2024
 A-delta LTMR (NTRK2+),KCNJ4,bhuiyan-2024
@@ -23,16 +21,13 @@ A-delta HTMR (CALCA+BMPR1B),TSPAN18,bhuiyan-2024
 A-delta HTMR (CALCA+BMPR1B),SERTM1,bhuiyan-2024
 A-delta HTMR (CALCA+BMPR1B),PTGIR,bhuiyan-2024
 A-delta HTMR (CALCA+SMR2),CHRNA7,bhuiyan-2024
-A-delta HTMR (CALCA+SMR2),MSR1,bhuiyan-2024
 A-delta HTMR (CALCA+SMR2),SAMSN1,bhuiyan-2024
 A-delta HTMR (CALCA+SMR2),LRRTM3,bhuiyan-2024
 Nociceptor (PEP CALCA+SSTR2),PTPRT,bhuiyan-2024
-Nociceptor (PEP CALCA+SSTR2),RELN,bhuiyan-2024
 Nociceptor (PEP CALCA+SSTR2),CNBD1,bhuiyan-2024
 Nociceptor (PEP CALCA+SSTR2),PCDH15,bhuiyan-2024
 Nociceptor (PEP CALCA+SSTR2),CACNG3,bhuiyan-2024
 Nociceptor (NP MRGPRD-type),COL6A6,bhuiyan-2024
-Nociceptor (NP MRGPRD-type),CDH1,bhuiyan-2024
 Nociceptor (NP MRGPRD-type),PRDM8,bhuiyan-2024
 Nociceptor (NP MRGPRD-type),LYPD6B,bhuiyan-2024
 Nociceptor (NP MRGPRD-type),TMEM45B,bhuiyan-2024
@@ -45,11 +40,9 @@ Pruritogen receptor (SST+),PRKCG,bhuiyan-2024
 Pruritogen receptor (SST+),GRIK4,bhuiyan-2024
 Cold thermoreceptor (TRPM8+),TRPM8,tavares-ferreira-2022
 Cold thermoreceptor (TRPM8+),ADCY2,bhuiyan-2024
-Cold thermoreceptor (TRPM8+),SPON1,bhuiyan-2024
 Cold thermoreceptor (TRPM8+),STUM,bhuiyan-2024
 Cold thermoreceptor (TRPM8+),GPR26,bhuiyan-2024
 C-LTMR (TAFA4+),GREM1,bhuiyan-2024
-C-LTMR (TAFA4+),POU6F2,bhuiyan-2024
 C-LTMR (TAFA4+),KCNJ6,bhuiyan-2024
 C-LTMR (TAFA4+),SAMD5,bhuiyan-2024
 C-LTMR (TAFA4+),CDH9,bhuiyan-2024
@@ -92,7 +85,7 @@ Pericyte / smooth muscle,NOTCH3,bhuiyan-2024
 Pericyte / smooth muscle,RGS5,bhuiyan-2024
 Pericyte / smooth muscle,MYH11,bhuiyan-2024
 Pericyte / smooth muscle,ACTA2,bhuiyan-2024
-Pericyte / smooth muscle,ABCC9,bhuiyan-2024
+Pericyte / smooth muscle,ABCC9,avraham-2022
 Macrophage,CD163,avraham-2022
 Macrophage,MRC1,avraham-2022
 Macrophage,CSF1R,bhuiyan-2024

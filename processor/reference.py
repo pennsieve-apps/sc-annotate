@@ -23,6 +23,7 @@ import scipy.sparse as sp
 log = logging.getLogger("sc-annotate")
 
 MIN_CELLS_PER_TYPE = 10
+SOURCE_KEYS = ("title", "citation", "doi", "license", "licence")
 ENSEMBL = re.compile(r"^ENS[A-Z]*G\d+")
 
 
@@ -110,6 +111,11 @@ def load(path, cell_type_col: str, batch_col: str, max_per_type: int, seed: int)
         idx, summary = select_cells(labels[labelled], max_per_type, seed)
         idx = np.flatnonzero(labelled)[idx]
         sub = backed[idx].to_memory()
+        # where the reference came from (CELLxGENE files carry title and citation in uns): it goes
+        # into the model's provenance, since model/reference.h5ad redistributes a subsample of it
+        # (a previous sc-annotate model keeps them under uns["source"])
+        nested = backed.uns.get("source") if isinstance(backed.uns.get("source"), dict) else {}
+        ref_source = {k: str(v)[:2000] for k, v in {**nested, **backed.uns}.items() if k in SOURCE_KEYS and isinstance(v, str)}
     finally:
         backed.file.close()
     X, var, source = counts_of(sub)
@@ -120,6 +126,7 @@ def load(path, cell_type_col: str, batch_col: str, max_per_type: int, seed: int)
     new_var = pd.DataFrame({"gene_ids": ids.to_numpy() if ids is not None else ""}, index=_symbols(var).to_numpy())
     ref = ad.AnnData(X=X, obs=obs, var=new_var)
     ref.var_names_make_unique()
+    ref.uns["source"] = ref_source
     log.info("reference: %d cells of %d used, %d genes, counts from %s, %d cell types, %d batches",
              ref.n_obs, len(labels), ref.n_vars, source, ref.obs["cell_type"].nunique(), ref.obs["batch"].nunique())
     return ref, summary

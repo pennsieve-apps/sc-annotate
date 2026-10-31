@@ -19,8 +19,10 @@ never model.pt, which is a pickle and so unsafe to load from an input.
 """
 from __future__ import annotations
 
+import io
 import json
 import logging
+import re
 import time
 from pathlib import Path
 
@@ -41,12 +43,34 @@ INIT_KEYS = {"n_hidden", "n_latent", "n_layers", "dropout_rate", "dispersion", "
 
 
 def device() -> tuple[str, str]:
-    """('gpu' | 'cpu', description); the GPU when torch sees one."""
+    """('gpu' | 'cpu', description): the GPU when torch sees one (always on the gpu variant, which
+    checks at start), else the CPU."""
     import torch
 
     if torch.cuda.is_available():
-        return "gpu", f"cuda ({torch.cuda.get_device_name(0)})"
+        return "gpu", cuda_description()
     return "cpu", "cpu (no CUDA device)"
+
+
+def cuda_description() -> str:
+    """Device name, torch.version.cuda and the NVIDIA driver version (from /proc on the GPU host)."""
+    import torch
+
+    try:
+        line = Path("/proc/driver/nvidia/version").read_text().splitlines()[0]
+        driver = re.search(r"Kernel Module\s+(\S+)", line).group(1)
+    except (OSError, IndexError, AttributeError):
+        driver = "unknown"
+    return f"cuda: {torch.cuda.get_device_name(0)}, torch.version.cuda {torch.version.cuda}, driver {driver}"
+
+
+def cuda_problem() -> str | None:
+    """For a CUDA build (TORCH_FLAVOUR=cuda): why no GPU can be used, or None when one can."""
+    import torch
+
+    if torch.cuda.is_available():
+        return None
+    return f"this is the CUDA build (torch {torch.__version__}, torch.version.cuda {torch.version.cuda}) but no GPU is usable"
 
 
 def quiet() -> None:
@@ -116,16 +140,16 @@ def save_scanvi(model, folder: Path) -> None:
     (folder / "setup.json").write_text(json.dumps(setup, indent=2) + "\n")
 
 
-def load_scanvi(ref, folder: Path):
-    """Rebuild a saved scANVI model on its reference (reference.h5ad: X counts, obs cell_type, batch)."""
+def load_scanvi(ref, files: dict, inp):
+    """Rebuild a saved scANVI model on its reference (reference.h5ad: X counts, obs cell_type, batch)
+    from scanvi/setup.json and scanvi/weights.pt, both read through the input checks with a cap."""
     import scvi
     import torch
 
-    for name, cap in (("setup.json", MAX_SETUP_BYTES), ("weights.pt", MAX_WEIGHTS_BYTES)):
-        if (folder / name).stat().st_size > cap:
-            raise ValueError(f"scanvi/{name} is larger than {cap} bytes")
-    setup = json.loads((folder / "setup.json").read_text())
-    if setup.get("format") != "sc-annotate scanvi v1":
+    setup = inp.read_json(files["setup.json"], MAX_SETUP_BYTES)
+    if not isinstance(setup, dict) or setup.get("format") != "sc-annotate scanvi v1" \
+            or not isinstance(setup.get("init_params"), dict) \
+            or not all(isinstance(setup.get(k), list) for k in ("var_names", "labels", "batches")):
         raise ValueError("scanvi/setup.json is not an sc-annotate model description")
     params = {k: v for k, v in setup["init_params"].items()
               if k in INIT_KEYS and isinstance(v, (bool, int, float, str))}
@@ -141,7 +165,8 @@ def load_scanvi(ref, folder: Path):
     batches = [str(c) for c in model.adata_manager.get_state_registry("batch").categorical_mapping]
     if labels != setup["labels"] or batches != setup["batches"]:
         raise ValueError("reference.h5ad does not match the saved model's labels or batches")
-    state = torch.load(folder / "weights.pt", map_location="cpu", weights_only=True)
+    state = torch.load(io.BytesIO(inp.read_bytes(files["weights.pt"], MAX_WEIGHTS_BYTES)), map_location="cpu",
+                       weights_only=True)
     model.module.load_state_dict(state)
     model.is_trained_ = True
     log.info("scANVI model rebuilt from scanvi/: %d genes, %d cell types", len(genes), len(labels) - 1)

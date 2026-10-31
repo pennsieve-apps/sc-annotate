@@ -57,9 +57,14 @@ def linked_input(tmp_path: Path, root: Path, **ports: Path) -> Path:
     return inp
 
 
-@pytest.mark.parametrize("layout", ["linked", "flat"])
+@pytest.mark.parametrize("layout", ["linked", "flat", "platform"])
 def test_markers_mode(fixture_root, tmp_path, monkeypatch, layout):
-    root = fixture_root[layout]
+    """linked: one real folder per port; flat: no links; platform: real port folders whose entries
+    are symlinks into a sibling upstream output folder, as the platform builds INPUT_DIR."""
+    if layout == "platform":
+        root = linked_input(tmp_path, fixture_root["linked"], markers=fixture_root["linked"] / "markers")
+    else:
+        root = fixture_root[layout]
     out = tmp_path / "out"
     assert run(root, out, monkeypatch, MODE="markers") == 0
     assert sorted(p.name for p in out.iterdir()) == PORTS
@@ -75,6 +80,10 @@ def test_markers_mode(fixture_root, tmp_path, monkeypatch, layout):
         assert {"app", "version", "tools", "parameters", "inputs", "started", "finished", "samples", "peak_rss_mb",
                 "citations"} <= set(prov)
         assert all("doi" in c and "text" in c for c in prov["citations"])
+        assert isinstance(prov["threads"], int) and isinstance(prov["inputs"], list)
+        assert all(not Path(p).is_absolute() for p in prov["inputs"])
+        assert sum(p.endswith(".h5ad") for p in prov["inputs"]) >= 3 and any(p.endswith("markers.csv") for p in prov["inputs"])
+        assert len(prov["started"]) == len("2026-10-31T12:00:00+00:00")
     summary = json.loads((out / "annotation" / "summary.json").read_text())
     assert summary["mode"] == "markers" and summary["marker_sets"]["source"] == "markers.csv"
 
@@ -99,6 +108,9 @@ def test_reference_celltypist(fixture_root, tmp_path, monkeypatch):
     assert run(fixture_root["linked"], out, monkeypatch, REFERENCE_BATCH_COLUMN="donor") == 0
     summary = json.loads((out / "annotation" / "summary.json").read_text())
     assert summary["mode"] == "reference" and summary["method"] == "celltypist" and summary["gene_match"] == "ensembl"
+    # the model redistributes a subsample of the reference: its title / citation go along
+    assert summary["reference_source"] == {"title": "Synthetic reference", "citation": "sc-annotate test fixture"}
+    assert ad.read_h5ad(out / "model" / "reference.h5ad").uns["source"]["citation"] == "sc-annotate test fixture"
     assert hit_rate(out, fixture_root["linked"]) >= 0.9
     assert not (out / "model" / "scanvi").exists()
 
@@ -123,11 +135,13 @@ def test_builtin_marker_sets():
     names = M.builtin_names()
     assert set(names) == {"broad", "drg-human", "knee-human"}
     for name in names:
-        sets = M.read_markers_csv(M.BUILTIN_DIR / f"{name}.csv")
+        sets = M.read_markers_csv((M.BUILTIN_DIR / f"{name}.csv").read_text())
         assert len(sets) >= 10
         genes = [g for s in sets for g in s.weights]
         assert len(genes) == len(set(genes)), f"{name}: a gene is listed for two cell types"
         assert all(2 <= len(s.weights) <= 8 for s in sets)
+        evidence = (Path(__file__).resolve().parent.parent / "markers-evidence" / f"{name}.md").read_text()
+        assert all(f"- **{g}**" in evidence for g in genes), f"{name}: a gene without evidence"
         with open(M.BUILTIN_DIR / f"{name}.csv", newline="") as fh:
             assert all(r["source"] for r in csv.DictReader(fh))
 
@@ -135,11 +149,11 @@ def test_builtin_marker_sets():
 def test_markers_csv_weights(tmp_path):
     path = tmp_path / "markers.csv"
     path.write_text("cell_type,gene,weight\nA,G1,2\nA,G2,1\nA,G3,-1\nB,G4,1\nB,G5,0\n")
-    sets = {s.cell_type: s.weights for s in M.read_markers_csv(path)}
+    sets = {s.cell_type: s.weights for s in M.read_markers_csv(path.read_text())}
     assert sets == {"A": {"G1": 2.0, "G2": 1.0, "G3": -1.0}, "B": {"G4": 1.0}}
     path.write_text("cell_type,gene,weight\nA,G1,heavy\n")
     with pytest.raises(ValueError):
-        M.read_markers_csv(path)
+        M.read_markers_csv(path.read_text())
 
 
 def test_negative_marker_lowers_the_score(fixture_root):
@@ -187,3 +201,37 @@ def test_no_usable_input_exits_1(fixture_root, tmp_path, monkeypatch):
 def test_markers_mode_without_markers_is_a_parameter_error(fixture_root, tmp_path, monkeypatch):
     cells_only = linked_input(tmp_path, fixture_root["linked"])
     assert run(cells_only, tmp_path / "out", monkeypatch, MARKER_SET="none") == 2
+
+
+def test_h5ad_reaching_other_files_is_skipped(fixture_root, tmp_path, monkeypatch):
+    import h5py
+
+    inp = linked_input(tmp_path, fixture_root["linked"])
+    outside = tmp_path / "outside.h5"
+    with h5py.File(outside, "w") as f:
+        f["secret"] = np.arange(3)
+    bad = tmp_path / "bad.h5ad"
+    shutil.copy(fixture_root["linked"] / "cells" / "s1.h5ad", bad)
+    with h5py.File(bad, "a") as f:
+        f["uns/leak"] = h5py.ExternalLink(str(outside), "/secret")
+    (inp / "cells" / "s4.h5ad").symlink_to(bad)
+    out = tmp_path / "out"
+    assert run(inp, out, monkeypatch, MODE="markers", MARKER_SET="broad") == 0
+    assert not (out / "cells" / "s4.h5ad").exists()
+    prov = json.loads((out / "labels" / "provenance.json").read_text())
+    assert "cells/s4.h5ad" in prov["skipped_inputs"]
+
+
+def test_gpu_variant_without_a_gpu_fails(fixture_root, tmp_path, monkeypatch):
+    import torch
+
+    if torch.cuda.is_available():
+        pytest.skip("a GPU is present")
+    monkeypatch.setenv("TORCH_FLAVOUR", "cuda")
+    assert run(fixture_root["linked"], tmp_path / "out", monkeypatch, MODE="markers") == 1
+
+
+def test_relative_input_dir(fixture_root, tmp_path, monkeypatch):
+    monkeypatch.chdir(fixture_root["linked"].parent)
+    assert run(Path("linked"), tmp_path / "out", monkeypatch, MODE="markers") == 0
+    assert len(rows(tmp_path / "out" / "labels" / "labels.csv")) == 1500

@@ -61,25 +61,25 @@ PARAMETERS = tuple(DEFAULTS)
 CHOICES = {"MODE": ("auto", "reference", "markers"), "METHOD": ("celltypist", "scanvi"),
            "MARKER_SET": tuple(BUILTIN_SETS) + ("none",)}
 CITATIONS = {
-    "best_practices": ("10.1038/s41576-023-00586-w", "37002403", "Heumos et al. Nat Rev Genet 2023"),
-    "scanpy": ("10.1186/s13059-017-1382-0", "29409532", "Wolf et al. Genome Biol 2018"),
-    "anndata": ("10.21105/joss.04371", None, "Virshup et al. J Open Source Softw 2024"),
-    "satija": ("10.1038/nbt.3192", "25867923", "Satija et al. Nat Biotechnol 2015"),
-    "tirosh": ("10.1126/science.aad0501", "27124452", "Tirosh et al. Science 2016"),
-    "scvi_tools": ("10.1038/s41587-021-01206-w", "35132262", "Gayoso et al. Nat Biotechnol 2022"),
-    "scvi": ("10.1038/s41592-018-0229-2", "30504886", "Lopez et al. Nat Methods 2018"),
-    "scanvi": ("10.15252/msb.20209620", "33491336", "Xu et al. Mol Syst Biol 2021"),
-    "scarches": ("10.1038/s41587-021-01001-7", "34462589", "Lotfollahi et al. Nat Biotechnol 2022"),
-    "pytorch": ("10.48550/arXiv.1912.01703", None, "Paszke et al. NeurIPS 2019"),
-    "celltypist": ("10.1126/science.abl5197", "35549406", "Dominguez Conde et al. Science 2022"),
-    "tavares_ferreira": ("10.1126/scitranslmed.abj8186", "35171654", "Tavares-Ferreira et al. Sci Transl Med 2022"),
-    "bhuiyan": ("10.1126/sciadv.adj9173", "38905344", "Bhuiyan et al. Sci Adv 2024"),
-    "avraham": ("10.1097/j.pain.0000000000002628", "35503034", "Avraham et al. Pain 2022"),
-    "ji": ("10.1136/annrheumdis-2017-212863", "30026257", "Ji et al. Ann Rheum Dis 2019"),
-    "chou": ("10.1038/s41598-020-67730-y", "32616761", "Chou et al. Sci Rep 2020"),
-    "zhang": ("10.1038/s41590-019-0378-1", "31061532", "Zhang et al. Nat Immunol 2019"),
-    "emont": ("10.1038/s41586-022-04518-2", "35296864", "Emont et al. Nature 2022"),
-    "panglaodb": ("10.1093/database/baz046", "30951143", "Franzen et al. Database 2019"),
+    "best_practices": ("10.1038/s41576-023-00586-w", "37002403", "Heumos L et al. Nat Rev Genet 2023"),
+    "scanpy": ("10.1186/s13059-017-1382-0", "29409532", "Wolf FA et al. Genome Biol 2018"),
+    "anndata": ("10.21105/joss.04371", None, "Virshup I et al. J Open Source Softw 2024"),
+    "satija": ("10.1038/nbt.3192", "25867923", "Satija R et al. Nat Biotechnol 2015"),
+    "tirosh": ("10.1126/science.aad0501", "27124452", "Tirosh I et al. Science 2016"),
+    "scvi_tools": ("10.1038/s41587-021-01206-w", "35132262", "Gayoso A et al. Nat Biotechnol 2022"),
+    "scvi": ("10.1038/s41592-018-0229-2", "30504886", "Lopez R et al. Nat Methods 2018"),
+    "scanvi": ("10.15252/msb.20209620", "33491336", "Xu C et al. Mol Syst Biol 2021"),
+    "scarches": ("10.1038/s41587-021-01001-7", "34462589", "Lotfollahi M et al. Nat Biotechnol 2022"),
+    "pytorch": ("10.48550/arXiv.1912.01703", None, "Paszke A et al. NeurIPS 2019"),
+    "celltypist": ("10.1126/science.abl5197", "35549406", "Domínguez Conde C et al. Science 2022"),
+    "tavares_ferreira": ("10.1126/scitranslmed.abj8186", "35171654", "Tavares-Ferreira D et al. Sci Transl Med 2022"),
+    "bhuiyan": ("10.1126/sciadv.adj9173", "38905344", "Bhuiyan SA et al. Sci Adv 2024"),
+    "avraham": ("10.1097/j.pain.0000000000002628", "35503034", "Avraham O et al. Pain 2022"),
+    "ji": ("10.1136/annrheumdis-2017-212863", "30026257", "Ji Q et al. Ann Rheum Dis 2019"),
+    "chou": ("10.1038/s41598-020-67730-y", "32616761", "Chou CH et al. Sci Rep 2020"),
+    "zhang": ("10.1038/s41590-019-0378-1", "31061532", "Zhang F et al. Nat Immunol 2019"),
+    "emont": ("10.1038/s41586-022-04518-2", "35296864", "Emont MP et al. Nature 2022"),
+    "panglaodb": ("10.1093/database/baz046", "30951143", "Franzén O et al. Database (Oxford) 2019"),
 }
 MARKER_SOURCES = {"drg-human": ["tavares_ferreira", "bhuiyan", "avraham"], "knee-human": ["ji", "chou", "zhang", "emont"],
                   "broad": ["panglaodb"]}
@@ -195,7 +195,7 @@ def main() -> int:
     if not input_dir or not output_dir:
         log.error("INPUT_DIR and OUTPUT_DIR must be set")
         return 2
-    input_dir, output_dir = Path(input_dir), Path(output_dir)
+    input_dir, output_dir = Path(input_dir).absolute(), Path(output_dir)   # safe_inputs takes relative paths under INPUT_DIR
     if not input_dir.is_dir():
         log.error("INPUT_DIR %s is not a folder", input_dir)
         return 2
@@ -204,8 +204,19 @@ def main() -> int:
     except ParameterError as exc:
         log.error("%s", exc)
         return 2
-    n_threads, thread_source = T.configure(params["THREADS"])
-    log.info("threads: %d (%s)", n_threads, thread_source)
+    from processor.safe_inputs import cpu_threads
+
+    n_threads = cpu_threads(params["THREADS"])
+    T.set_env(n_threads)
+    log.info("threads: %d", n_threads)
+    if os.environ.get("TORCH_FLAVOUR") == "cuda":     # the gpu variant never runs on the CPU unnoticed
+        from processor import transfer as X
+
+        problem = X.cuda_problem()
+        if problem:
+            log.error("GPU variant: %s; run it on a GPU node (computeTypes gpu) or use the cpu variant", problem)
+            return 1
+        log.info("GPU: %s", X.cuda_description())
 
     import numpy as np
     import pandas as pd
@@ -215,6 +226,7 @@ def main() -> int:
     from processor.inputs import discover
 
     found = discover(input_dir)
+    rel = found.input_dir.rel
     for name, reason in found.skipped.items():
         log.warning("%s: skipped, %s", name, reason)
     if not found.samples:
@@ -232,10 +244,10 @@ def main() -> int:
             log.error("markers mode needs a markers.csv on the markers input or a built-in MARKER_SET")
             return 2
         try:
-            sets, marker_source = M.load_sets(params["MARKER_SET"], found.markers_csv)
+            sets, marker_source = M.load_sets(params["MARKER_SET"], found.markers_csv, found.input_dir)
         except (OSError, ValueError) as exc:
             log.error("marker sets: %s", exc)
-            return 2
+            return 1
     method = params["METHOD"] if mode == "reference" else "markers"
     source = ("model" if found.reference.is_model else "reference") if mode == "reference" else "markers"
     log.info("%d samples; mode %s (%s)%s", len(found.samples), mode, method,
@@ -261,12 +273,12 @@ def main() -> int:
                 var = a.var.copy()
                 var.index = var.index.astype(str)
                 var_of[sid] = var[~var.index.duplicated()]
-                statuses[sid] = {"sample_id": sid, "file": str(path.relative_to(input_dir)), "status": "ok",
+                statuses[sid] = {"sample_id": sid, "file": rel(path), "status": "ok",
                                  "n_obs": int(a.n_obs), "n_genes": int(a.n_vars)}
             finally:
                 a.file.close()
         except Exception as exc:
-            statuses[sid] = {"sample_id": sid, "file": str(path.relative_to(input_dir)), "status": "failed",
+            statuses[sid] = {"sample_id": sid, "file": rel(path), "status": "failed",
                              "error": f"{type(exc).__name__}: {exc}"}
             log.error("%s: skipped: %s", sid, exc)
     ok = [sid for sid in found.samples if statuses[sid]["status"] == "ok"]
@@ -323,15 +335,15 @@ def main() -> int:
             ct_col, batch_col = ("cell_type", "batch") if found.reference.is_model else (params["CELL_TYPE_COLUMN"], params["REFERENCE_BATCH_COLUMN"])
             ref, ref_summary = R.load(ref_path, ct_col, batch_col, params["MAX_CELLS_PER_TYPE"], params["SEED"])
             mapping, how = R.align(ref.var, query_var)
-            info.update(reference=str(ref_path.relative_to(input_dir)), gene_match=how, n_genes_reference=int(ref.n_vars),
+            info.update(reference=rel(ref_path), reference_source=ref.uns.get("source", {}), gene_match=how, n_genes_reference=int(ref.n_vars),
                         n_genes_shared=len(mapping))
             log.info("genes shared with the reference: %d of %d (matched by %s)", len(mapping), ref.n_vars, how)
             if len(mapping) < 200:
                 log.error("only %d genes are shared with the reference; is it the same species and gene naming?", len(mapping))
                 return 1
             probs = None
-            if params["METHOD"] == "scanvi" and found.reference.scanvi_dir is not None:
-                scanvi_model = X.load_scanvi(ref, found.reference.scanvi_dir)
+            if params["METHOD"] == "scanvi" and found.reference.scanvi is not None:
+                scanvi_model = X.load_scanvi(ref, found.reference.scanvi, found.input_dir)
                 model_ref = scanvi_model.adata.copy()
                 genes = list(model_ref.var_names)
                 info["training"] = {"reused": "scanvi/ of the reference model"}
@@ -411,7 +423,7 @@ def main() -> int:
             pen = dict(a.uns.get("pennsieve", {})) if isinstance(a.uns.get("pennsieve"), dict) else {}
             pen["annotation"] = annotation_uns
             a.uns["pennsieve"] = pen
-            a.write_h5ad(dirs["cells"] / f"{sid}.h5ad")
+            a.write_h5ad(dirs["cells"] / f"{sid}.h5ad", compression="gzip")
             if model_pick:
                 m = a.obs_names.isin(list(model_pick))
                 if m.any():
@@ -436,8 +448,10 @@ def main() -> int:
     if model_ref is not None:
         model_ref.obs["cell_type"] = pd.Categorical(model_ref.obs["cell_type"].astype(str))
         model_ref.obs["batch"] = pd.Categorical(model_ref.obs["batch"].astype(str))
-        model_ref.uns["pennsieve"] = {"model_of": APP_NAME, "version": app_version(), "mode": mode, "method": method}
-        model_ref.write_h5ad(dirs["model"] / "reference.h5ad")
+        source_of_ref = info.get("reference_source") or {}
+        model_ref.uns = {"pennsieve": {"model_of": APP_NAME, "version": app_version(), "mode": mode, "method": method},
+                         **({"source": source_of_ref} if source_of_ref else {})}
+        model_ref.write_h5ad(dirs["model"] / "reference.h5ad", compression="gzip")
         R.signatures(model_ref).to_csv(dirs["model"] / "signatures.csv", float_format="%.6g")
         if scanvi_model is not None:
             from processor import transfer as X
@@ -517,12 +531,13 @@ def main() -> int:
     n_failed = sum(1 for s in statuses.values() if s["status"] != "ok")
     provenance = {
         "app": APP_NAME, "version": app_version(), "tools": tool_versions(), "parameters": params,
-        "threads": {"n": n_threads, "source": thread_source}, "method": info, "citations": citations(keys),
-        "inputs": {"cells": [statuses[s]["file"] for s in found.samples],
-                   "reference": str(found.reference.path.relative_to(input_dir)) if found.reference else None,
-                   "markers_csv": str(found.markers_csv.relative_to(input_dir)) if found.markers_csv else None,
-                   "skipped": found.skipped},
-        "started": started.isoformat(), "finished": datetime.now(timezone.utc).isoformat(),
+        "threads": n_threads, "method": info, "citations": citations(keys),
+        "inputs": [rel(p) for p in [*found.samples.values(),
+                                    *([found.reference.path, *(found.reference.scanvi or {}).values()] if found.reference else []),
+                                    *([found.markers_csv] if found.markers_csv else [])]],
+        "skipped_inputs": found.skipped,
+        "started": started.isoformat(timespec="seconds"),
+        "finished": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "timings_seconds": {"annotate": round(t_calls, 2), "write": round(t_write, 2), "total": round(time.monotonic() - t0, 2)},
         "peak_rss_mb": peak_rss_mb(), "cgroup_peak_mb": cgroup_peak_mb(),
         "samples": list(statuses.values()), "n_ok": len(statuses) - n_failed, "n_failed": n_failed,

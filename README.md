@@ -135,6 +135,11 @@ sample failed, too few shared genes) exits with code 1.
   the cell2location app reads), `model/reference_summary.csv` (`cell_type, n_cells, n_used,
   status`), `model/scanvi/` (`model.pt` for `scvi.model.SCANVI.load` in a notebook; `weights.pt` +
   `setup.json`, what a later run of this app reads).
+- In reference mode `model/reference.h5ad` holds a subsample of **your reference** (counts and
+  labels): sharing the model shares that data, under the reference's own licence. The reference's
+  `uns` `title`, `citation`, `doi` and `license` (CELLxGENE files carry the first two) are copied
+  into `model/reference.h5ad` (`uns["source"]`) and `summary.json` / `provenance.json`
+  (`reference_source`).
 - `annotation/summary.json` (mode, method, counts, fraction `Unassigned`, per-type counts and mean
   score, gene matching, marker sets used and skipped, training settings),
   `cell_types_by_sample.csv` (`sample_id, cell_type, n_obs, fraction`), `confusion.csv`
@@ -147,14 +152,22 @@ sample failed, too few shared genes) exits with code 1.
 
 ## Built-in marker sets
 
-`processor/markers/*.csv` (`cell_type, gene, source`). Every gene was checked against the cited
-paper's tables or text (and its HGNC symbol); no gene is listed for two types of the same set.
+`processor/markers/*.csv` (`cell_type, gene, source`). For every gene, `markers-evidence/<set>.md`
+gives the table row (sheet, cluster, fold change, detection rates, adjusted p) or the quoted
+sentence of the cited source that supports it; every symbol is an approved HGNC symbol (sources
+that print a previous symbol, e.g. C2orf82, LECT1, WISP2, IGJ, are noted there), and no gene is
+listed for two types of the same set. A test checks that every gene has an evidence entry. In
+`drg-human`, neuron-subtype genes that Bhuiyan et al.'s Table S6 also shows in at least 60 % of a
+non-neuronal DRG cluster were removed (RELN, CDH1, MSR1, CCND2, POU6F2, MCTP2, SPON1), because the
+scores are z-scored over all nuclei; ATF3, the defining gene of the injured-neuron set, is a stress
+gene that pericytes also express. SCN7A (non-myelinating Schwann cells) traces only to Bhuiyan et
+al.'s annotation-marker Table S2.
 
 | Set | Types | Sources |
 |---|---|---|
-| `drg-human` | 20: Neuron (pan-neuronal, used when no subtype leads), Proprioceptor (PVALB+), A-beta LTMR, A-delta LTMR, two A-delta HTMR, PEP and NP nociceptors, Pruritogen receptor (SST+), Cold thermoreceptor, C-LTMR, Injured neuron (ATF3+), Satellite glia, Myelinating and Non-myelinating Schwann cell, Fibroblast, Endothelial, Pericyte / smooth muscle, Macrophage, T cell | Bhuiyan et al. 2024 (Tables S2 and S6, human DRG), Tavares-Ferreira et al. 2022, Avraham et al. 2022 |
-| `knee-human` | 14: effector, prehypertrophic and hypertrophic chondrocytes; lining (PRG4+) and sublining synovial fibroblasts; synovial macrophages; CD1C+ dendritic cells; T, B, plasma and mast cells; endothelial; pericyte / smooth muscle; adipocytes | Ji et al. 2019 (OA cartilage), Chou et al. 2020 (OA synovium), Zhang et al. 2019 (synovium), Emont et al. 2022 (adipose) |
-| `broad` | 16: T, NK, B, plasma, macrophages, mast, neutrophils, endothelial, fibroblasts, smooth muscle / pericytes, epithelial, neurons, Schwann cells, oligodendrocytes, adipocytes, erythroid | PanglaoDB (Franzén et al. 2019), human markers of low ubiquitousness |
+| `drg-human` | 20 types, 98 genes: Neuron (pan-neuronal, used when no subtype leads), Proprioceptor (PVALB+), A-beta LTMR, A-delta LTMR, two A-delta HTMR, PEP and NP nociceptors, Pruritogen receptor (SST+), Cold thermoreceptor, C-LTMR, Injured neuron (ATF3+), Satellite glia, Myelinating and Non-myelinating Schwann cell, Fibroblast, Endothelial, Pericyte / smooth muscle, Macrophage, T cell | Bhuiyan et al. 2024 (Tables S2 and S6, human DRG), Tavares-Ferreira et al. 2022, Avraham et al. 2022 |
+| `knee-human` | 14 types, 76 genes: effector, prehypertrophic and hypertrophic chondrocytes; lining (PRG4+) and sublining synovial fibroblasts; synovial macrophages; CD1C+ dendritic cells; T, B, plasma and mast cells; endothelial; pericyte / smooth muscle; adipocytes | Ji et al. 2019 (OA cartilage), Chou et al. 2020 (OA synovium), Zhang et al. 2019 (synovium), Emont et al. 2022 (adipose) |
+| `broad` | 16 types, 91 genes: T, NK, B, plasma, macrophages, mast, neutrophils, endothelial, fibroblasts, smooth muscle / pericytes, epithelial, neurons, Schwann cells, oligodendrocytes, adipocytes, erythroid | PanglaoDB (Franzén et al. 2019), human markers of low ubiquitousness |
 
 Bhuiyan et al.'s neuron type names are their cross-species harmonized names (`SMR2` has no human
 gene; it names the type). Left out for lack of specific human markers: the rarer peptidergic
@@ -166,37 +179,37 @@ from subcutaneous/visceral fat, not the infrapatellar fat pad.
 ## Results on the demo data
 
 **Markers mode on the C2 DRG data** (Discover 475; sc-prep → sc-qc → sc-integrate outputs in
-`workflow-single-cell/data/work/drg-c2/`, 12 samples, 18,439 nuclei, 15 clusters;
-`MARKER_SET=drg-human`; outputs in `data/work/drg-c2/annotate/`): 10 types called, 34.6 % of
-nuclei `Unassigned`. Called: Fibroblast (C02, C06; 3,581), Satellite glia (C03; 1,878), Neuron
-(C04; 1,852), Endothelial (C09; 1,042), Proprioceptor (PVALB+) (C10; 874), Macrophage (C11; 858),
-Pruritogen receptor (SST+) (C12; 688), PEP nociceptor (C13; 593), Myelinating Schwann cell (C14;
-537), Pericyte / smooth muscle (C15; 147). Unassigned: C07 (1,318; CALCA-high, between the PEP
-nociceptor and A-delta HTMR sets, margin 0.11), C01 (2,182; low expression of every set, mostly
-sample CC0048), C05 and C08 (mixed glial and neuronal markers, likely neuron-glia doublets or
-ambient RNA). The eight neuron-rich samples are 38-65 % neuronal types; **CC0032, CC0037, CC0048
-and CC0050 are 0-7 % neuronal** (CC0037: none; fibroblasts 50 %, endothelial 19 %, macrophages
-16 %), i.e. these biopsies are mostly nerve root / connective tissue rather than ganglion; compare
-conditions on them with care.
+`workflow-single-cell/data/work/drg-c2/` as of 2026-10-31 18:43 UTC, 12 samples, 18,438 nuclei, 15
+clusters; `MARKER_SET=drg-human`, cpu image in Docker; outputs in `data/work/drg-c2/annotate/`): 9
+types called, 35.1 % of nuclei `Unassigned`. Called: Fibroblast (C02, C07; 3,653), Satellite glia
+(C01; 2,516), Neuron (C06, C11; 2,062), Endothelial (C08; 1,082), Macrophage (C10; 847),
+Pruritogen receptor (SST+) (C12; 624), Myelinating Schwann cell (C13; 554), NP nociceptor (C14;
+485), Pericyte / smooth muscle (C15; 152). Unassigned: C03 (2,255) and C04 (1,733), whose best sets
+score barely above average (mean z 0.28 and 0.16: low-quality or ambient-dominated nuclei), C05
+(1,511; neuronal and Schwann markers together: doublets or ambient RNA) and C09 (964; Neuron ahead
+of Proprioceptor by 0.11 only). The eight neuron-rich samples are 31-46 % neuronal types; **CC0032,
+CC0037, CC0048 and CC0050 are 6.1 %, 0.2 %, 2.7 % and 11 % neuronal** (CC0037: fibroblasts 50 %,
+endothelial 19 %, macrophages 15 %), i.e. these biopsies are mostly nerve root / connective tissue
+rather than ganglion; compare conditions on them with care.
 
 **Reference mode, atlas split** (Discover 480; 8 donors, 4 per half, at most 3,000 nuclei per
-sample; a stand-in for sc-qc/sc-integrate from `tests/make_fixture.py --from-cellranger`): half A
-(10,975 nuclei) was annotated with `drg-human` markers, its `model/` linked as the reference of
-half B (10,046 nuclei), and the transferred labels compared with half B's own marker labels. Half
-A's reference held 11 types: Neuron, A-beta LTMR, SST+ pruritogen receptor and eight non-neuronal
-types (the other neuron subtypes were not called in half A, so they cannot be transferred).
+sample; a stand-in for sc-qc/sc-integrate from `tests/make_fixture.py --from-cellranger`; native
+arm64 runs): half A (10,975 nuclei) was annotated with `drg-human` markers, its `model/` linked as
+the reference of half B (10,046 nuclei), and the transferred labels compared with half B's own
+marker labels. Half A's reference held 10 types: Neuron, A-beta LTMR and eight non-neuronal types
+(the neuron subtypes not called in half A cannot be transferred).
 
 | | scANVI | CellTypist |
 |---|---|---|
-| `Unassigned` (MIN_SCORE 0.5) | 1.3 % | 36.5 % |
-| Same label, of the 8,001 nuclei whose marker label is a reference type | 65.7 % | 44.4 % (76.7 % of those it labelled) |
-| Same broad class (neuron subtypes pooled), both labelled | 71.3 % (n = 9,127) | 80.7 % (n = 5,747) |
+| `Unassigned` (MIN_SCORE 0.5) | 1.0 % | 32.9 % |
+| Same label, of the 7,838 nuclei whose marker label is a reference type | 66.9 % | 47.0 % (76.0 % of those it labelled) |
+| Same broad class (neuron subtypes pooled), both labelled | 72.3 % (n = 9,485) | 79.8 % (n = 6,301) |
 
-The main disagreements: satellite glia (markers) vs non-myelinating Schwann cells (transfer),
-neuron subtypes absent from the reference transferred as `Neuron` (consistent, coarser), and NP
-nociceptors transferred as the related SST+ pruritogen receptors. CellTypist leaves the uncertain
-nuclei `Unassigned`; scANVI labels nearly all. This measures the consistency of the two modes on
-one tissue, not accuracy against an expert annotation.
+The main disagreements: neuron subtypes absent from the reference transferred as `Neuron`
+(consistent, coarser), satellite glia (markers) vs non-myelinating Schwann cells (scANVI), and
+satellite glia and fibroblasts that CellTypist leaves `Unassigned`. scANVI labels nearly every
+nucleus; CellTypist leaves the uncertain third unlabelled. This measures the consistency of the
+two modes on one tissue, not accuracy against an expert annotation.
 
 **Synthetic fixture** (`tests/make_fixture.py`: 3 samples, 6 planted types): markers 100 %,
 CellTypist 95.9 %, scANVI 98.7 % of nuclei get their planted type; the scANVI model reused as a
@@ -209,24 +222,35 @@ Measured in the linux/amd64 cpu image under emulation on an M-series Mac (Docker
 
 | Run | Nuclei | Wall time | Peak memory (cgroup) |
 |---|---|---|---|
-| markers, C2 DRG, 18,082 genes | 18,439 | 37 s | 1.36 GB |
-| CellTypist, atlas split (8,468 reference nuclei) | 10,046 | 63 s | 3.56 GB |
-| scANVI, atlas split (400 + 20 + 100 epochs, 8,468 reference nuclei) | 10,046 | 1,192 s | 1.62 GB |
-| the same, native arm64 (4 threads, no Docker) | 10,046 | 605 s | 1.45 GB (process RSS) |
+| markers, C2 DRG, 18,082 genes | 18,438 | 34 s | 1.17 GB |
+| CellTypist, atlas split (8,468 reference nuclei; first build, torch 2.15) | 10,046 | 63 s | 3.56 GB |
+| scANVI, atlas split (400 + 20 + 100 epochs, 8,468 reference nuclei; first build, torch 2.15) | 10,046 | 1,192 s | 1.62 GB |
+| scANVI, atlas split, current code, native arm64 (4 threads, no Docker) | 10,046 | 519 s | 1.47 GB (process RSS) |
 
 Memory: markers mode holds one sample plus a nuclei × sets score table; reference mode holds the
 reference subsample (`MAX_CELLS_PER_TYPE` × types, all genes, CSR) and, for scANVI, the query's
-counts on 3,000 genes (about 1 GB per 100,000 nuclei). CellTypist densifies the reference
-subsample on the 3,000 genes for training (8 bytes × cells × 3,000: 1.4 GB for 60,000 cells).
-Images: cpu 2.1 GB (0.46 GB compressed), gpu 9.5 GB (the CUDA libraries). `runtime.memory` is 16 GiB, enough for 300,000 query nuclei with a 40-type reference. On a CPU,
-scANVI takes minutes per 10,000 nuclei and epoch count; use the gpu variant for large data.
+counts on 3,000 genes. CellTypist densifies the reference subsample on the 3,000 genes for
+training (8 bytes × cells × 3,000).
+
+**Estimates, not measured** (extrapolated linearly from the runs above, 10,000-18,000 nuclei):
+the scANVI query matrix needs about 1 GB per 100,000 nuclei; CellTypist training on a 40-type
+reference at 2,000 cells per type (80,000 cells) needs about 2 GB for the dense matrix; so
+`runtime.memory` 16 GiB should hold 300,000 query nuclei with a 40-type reference. scANVI on a CPU
+scales with nuclei × epochs (about 1 s per epoch per 10,000 nuclei here); use the gpu variant for
+large data.
+
+Images (measured, uncompressed): cpu 2.0 GB, gpu 3.9 GB.
 
 ## GPU variant
 
-`variants` in `app.yml`: the `gpu` variant is built with `TORCH_FLAVOUR=cuda` (CUDA 13.2 PyTorch
-wheels), runs on `computeTypes: [gpu]` and defaults to `METHOD=scanvi`. Its image was built and
-imports checked locally (no GPU here, so it was not run on one; `torch.cuda.is_available()`
-decides at run time and the device is logged).
+`variants` in `app.yml`: the `gpu` variant is built with `TORCH_FLAVOUR=cuda` (torch
+`2.14.1+cu126`: the platform's GPU nodes run the Amazon Linux 2 ECS GPU AMI with NVIDIA driver 550,
+CUDA 12.4, which CUDA 13 builds do not support), runs on `computeTypes: [gpu]` and defaults to
+`METHOD=scanvi`. At start the CUDA build checks for a GPU: without one it logs an ERROR with
+`torch.version.cuda` and exits 1 (it never falls back to hours of CPU training); with one it logs
+the device, `torch.version.cuda` and the driver version. Its image was built and its imports
+checked locally; there is no GPU here, so it has not run on one (the startup check was seen to
+exit 1).
 
 ## Running it locally
 
@@ -258,9 +282,9 @@ See `sample-input/README.md` for the inputs and real data.
 
 Our code is Apache-2.0 (`LICENSE`). scvi-tools, scanpy and anndata are BSD-3-Clause, CellTypist
 MIT, PyTorch BSD-style, Pyro and Lightning Apache-2.0. The gpu image contains the NVIDIA CUDA
-libraries of the CUDA build of PyTorch (proprietary, redistributable). Nothing in either image is
-GPL: igraph and leidenalg (GPL), which celltypist declares for its over-clustering, are not
-installed. **CellTypist pretrained models are not bundled**: they are pickles hosted by the
+libraries of the CUDA build of PyTorch (proprietary, redistributable). No GPL Python packages are
+installed (igraph and leidenalg, GPL, which celltypist declares for its over-clustering, are left
+out); the Debian base layer contains GPL system tools, as every Debian image does. **CellTypist pretrained models are not bundled**: they are pickles hosted by the
 Wellcome Sanger Institute without an explicit model licence (the site's default terms are CC
 BY-NC-ND 4.0), and none fits the target tissues. The built-in marker tables are lists of gene
 symbols with their sources; the source articles' licences are in `THIRD_PARTY.md`. Details in
@@ -277,10 +301,10 @@ symbols with their sources; the source articles' licences are in `THIRD_PARTY.md
   the data, normalize it, select variable genes and score marker genes (`score_genes`, the
   method of Satija et al. 2015 and Tirosh et al. 2016).
 - **PyTorch** (Paszke et al. 2019) runs the scvi-tools models on CPU or GPU.
-- **Marker sets**: Bhuiyan, Xu, Renthal and colleagues' harmonized DRG/trigeminal atlas,
+- **Marker sets** (first and last authors as published): Bhuiyan, Renthal and colleagues' harmonized DRG/trigeminal atlas,
   Tavares-Ferreira, Price and colleagues' human DRG spatial atlas, Avraham, Cavalli and
-  colleagues' human DRG single-nucleus data (`drg-human`); Ji, Wang and colleagues' human OA
-  cartilage atlas, Chou, Lotz and colleagues' human OA synovium data, Zhang, Raychaudhuri and the
+  colleagues' human DRG single-nucleus data (`drg-human`); Ji, Tang and colleagues' human OA
+  cartilage atlas, Chou, Kraus and colleagues' human OA synovium data, Zhang, Raychaudhuri and the
   AMP RA/SLE network's synovial atlas, Emont, Rosen and colleagues' human adipose atlas
   (`knee-human`); Franzén, Gan and Björkegren's PanglaoDB (`broad`).
 - **Demo data**: Arendt-Tranholm, Sankaranarayanan and Price (C2 DRG single-nucleus data,

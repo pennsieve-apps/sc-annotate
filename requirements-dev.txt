@@ -2,7 +2,7 @@
 # (pip resolves torch for the local platform; the image pins the linux/amd64 set in requirements.txt)
 scvi-tools==1.5.2
 celltypist==1.7.1
-torch==2.15.0
+torch==2.14.1
 scanpy==1.12.5
 anndata==0.13.4
 scikit-learn==1.7.2
@@ -15,6 +15,6 @@ matplotlib==3.11.2
 igraph==1.0.0  # tests/make_fixture.py's real-data stand-in clusters with Leiden (not in the image)
 leidenalg==0.12.0
 pytest==9.2.0
-jsonschema==3.2.0
+jsonschema==4.26.0
 PyYAML==6.0.3
-cffconvert==2.0.0
+cffconvert==2.0.0  # declares jsonschema<4 but validates CFF 1.2.0 correctly with 4.26.0 (make validate)
