@@ -1,0 +1,92 @@
+cell_type,gene,source
+T cells,CD3D,panglaodb-2019
+T cells,CD3E,panglaodb-2019
+T cells,TRAC,panglaodb-2019
+T cells,LCK,panglaodb-2019
+T cells,CD6,panglaodb-2019
+T cells,TRBC2,panglaodb-2019
+NK cells,GNLY,panglaodb-2019
+NK cells,NKG7,panglaodb-2019
+NK cells,KLRD1,panglaodb-2019
+NK cells,KLRF1,panglaodb-2019
+NK cells,PRF1,panglaodb-2019
+B cells,MS4A1,panglaodb-2019
+B cells,CD79B,panglaodb-2019
+B cells,BANK1,panglaodb-2019
+B cells,TNFRSF13C,panglaodb-2019
+B cells,PAX5,panglaodb-2019
+B cells,CD19,panglaodb-2019
+Plasma cells,MZB1,panglaodb-2019
+Plasma cells,JCHAIN,panglaodb-2019
+Plasma cells,TNFRSF17,panglaodb-2019
+Plasma cells,PRDM1,panglaodb-2019
+Plasma cells,SDC1,panglaodb-2019
+Plasma cells,IGHG1,panglaodb-2019
+Macrophages,CD163,panglaodb-2019
+Macrophages,VSIG4,panglaodb-2019
+Macrophages,MS4A4A,panglaodb-2019
+Macrophages,MRC1,panglaodb-2019
+Macrophages,CD68,panglaodb-2019
+Macrophages,MS4A6A,panglaodb-2019
+Mast cells,TPSAB1,panglaodb-2019
+Mast cells,TPSB2,panglaodb-2019
+Mast cells,CPA3,panglaodb-2019
+Mast cells,MS4A2,panglaodb-2019
+Mast cells,HPGDS,panglaodb-2019
+Mast cells,KIT,panglaodb-2019
+Neutrophils,CSF3R,panglaodb-2019
+Neutrophils,CXCR1,panglaodb-2019
+Neutrophils,CXCR2,panglaodb-2019
+Neutrophils,CEACAM8,panglaodb-2019
+Neutrophils,MMP8,panglaodb-2019
+Endothelial cells,PECAM1,panglaodb-2019
+Endothelial cells,VWF,panglaodb-2019
+Endothelial cells,CDH5,panglaodb-2019
+Endothelial cells,CLDN5,panglaodb-2019
+Endothelial cells,FLT1,panglaodb-2019
+Endothelial cells,EMCN,panglaodb-2019
+Endothelial cells,TIE1,panglaodb-2019
+Fibroblasts,DCN,panglaodb-2019
+Fibroblasts,LUM,panglaodb-2019
+Fibroblasts,COL1A2,panglaodb-2019
+Fibroblasts,COL3A1,panglaodb-2019
+Fibroblasts,PDGFRA,panglaodb-2019
+Smooth muscle cells / pericytes,MYH11,panglaodb-2019
+Smooth muscle cells / pericytes,CNN1,panglaodb-2019
+Smooth muscle cells / pericytes,LMOD1,panglaodb-2019
+Smooth muscle cells / pericytes,ACTA2,panglaodb-2019
+Smooth muscle cells / pericytes,HIGD1B,panglaodb-2019
+Smooth muscle cells / pericytes,NOTCH3,panglaodb-2019
+Smooth muscle cells / pericytes,KCNJ8,panglaodb-2019
+Epithelial cells,EPCAM,panglaodb-2019
+Epithelial cells,CDH1,panglaodb-2019
+Epithelial cells,KRT8,panglaodb-2019
+Epithelial cells,KRT18,panglaodb-2019
+Epithelial cells,KRT19,panglaodb-2019
+Epithelial cells,CLDN4,panglaodb-2019
+Neurons,SNAP25,panglaodb-2019
+Neurons,RBFOX3,panglaodb-2019
+Neurons,STMN2,panglaodb-2019
+Neurons,NEFM,panglaodb-2019
+Neurons,NEFH,panglaodb-2019
+Schwann cells,MPZ,panglaodb-2019
+Schwann cells,PRX,panglaodb-2019
+Schwann cells,PMP22,panglaodb-2019
+Schwann cells,CLDN19,panglaodb-2019
+Oligodendrocytes,MOG,panglaodb-2019
+Oligodendrocytes,MBP,panglaodb-2019
+Oligodendrocytes,ST18,panglaodb-2019
+Oligodendrocytes,MYRF,panglaodb-2019
+Oligodendrocytes,KLK6,panglaodb-2019
+Adipocytes,ADIPOQ,panglaodb-2019
+Adipocytes,PLIN1,panglaodb-2019
+Adipocytes,LEP,panglaodb-2019
+Adipocytes,CIDEC,panglaodb-2019
+Adipocytes,CIDEA,panglaodb-2019
+Adipocytes,LGALS12,panglaodb-2019
+Erythroid cells,HBB,panglaodb-2019
+Erythroid cells,HBA1,panglaodb-2019
+Erythroid cells,HBD,panglaodb-2019
+Erythroid cells,ALAS2,panglaodb-2019
+Erythroid cells,AHSP,panglaodb-2019
+Erythroid cells,GYPA,panglaodb-2019

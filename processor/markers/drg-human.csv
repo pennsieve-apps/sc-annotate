@@ -1,0 +1,106 @@
+cell_type,gene,source
+Neuron,SNAP25,bhuiyan-2024
+Neuron,RBFOX3,bhuiyan-2024
+Proprioceptor (PVALB+),PVALB,tavares-ferreira-2022
+Proprioceptor (PVALB+),MCTP2,bhuiyan-2024
+Proprioceptor (PVALB+),NXPH1,bhuiyan-2024
+Proprioceptor (PVALB+),ZNF385B,bhuiyan-2024
+Proprioceptor (PVALB+),RUNX3,tavares-ferreira-2022
+Proprioceptor (PVALB+),KCNS1,tavares-ferreira-2022
+Proprioceptor (PVALB+),WLS,bhuiyan-2024
+A-beta LTMR (NTRK3-high),PTGFR,bhuiyan-2024
+A-beta LTMR (NTRK3-high),HSPB7,bhuiyan-2024
+A-beta LTMR (NTRK3-high),NRGN,bhuiyan-2024
+A-beta LTMR (NTRK3-high),KCNN1,bhuiyan-2024
+A-delta LTMR (NTRK2+),KCNV1,bhuiyan-2024
+A-delta LTMR (NTRK2+),CCND2,bhuiyan-2024
+A-delta LTMR (NTRK2+),CBLN2,bhuiyan-2024
+A-delta LTMR (NTRK2+),DCHS2,bhuiyan-2024
+A-delta LTMR (NTRK2+),KCNJ4,bhuiyan-2024
+A-delta LTMR (NTRK2+),CACNA1H,bhuiyan-2024
+A-delta HTMR (CALCA+BMPR1B),SCGN,bhuiyan-2024
+A-delta HTMR (CALCA+BMPR1B),TSPAN18,bhuiyan-2024
+A-delta HTMR (CALCA+BMPR1B),SERTM1,bhuiyan-2024
+A-delta HTMR (CALCA+BMPR1B),PTGIR,bhuiyan-2024
+A-delta HTMR (CALCA+SMR2),CHRNA7,bhuiyan-2024
+A-delta HTMR (CALCA+SMR2),MSR1,bhuiyan-2024
+A-delta HTMR (CALCA+SMR2),SAMSN1,bhuiyan-2024
+A-delta HTMR (CALCA+SMR2),LRRTM3,bhuiyan-2024
+Nociceptor (PEP CALCA+SSTR2),PTPRT,bhuiyan-2024
+Nociceptor (PEP CALCA+SSTR2),RELN,bhuiyan-2024
+Nociceptor (PEP CALCA+SSTR2),CNBD1,bhuiyan-2024
+Nociceptor (PEP CALCA+SSTR2),PCDH15,bhuiyan-2024
+Nociceptor (PEP CALCA+SSTR2),CACNG3,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),COL6A6,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),CDH1,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),PRDM8,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),LYPD6B,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),TMEM45B,bhuiyan-2024
+Nociceptor (NP MRGPRD-type),RASSF6,bhuiyan-2024
+Pruritogen receptor (SST+),SST,bhuiyan-2024
+Pruritogen receptor (SST+),CCK,bhuiyan-2024
+Pruritogen receptor (SST+),CACNG2,bhuiyan-2024
+Pruritogen receptor (SST+),PTPN5,bhuiyan-2024
+Pruritogen receptor (SST+),PRKCG,bhuiyan-2024
+Pruritogen receptor (SST+),GRIK4,bhuiyan-2024
+Cold thermoreceptor (TRPM8+),TRPM8,tavares-ferreira-2022
+Cold thermoreceptor (TRPM8+),ADCY2,bhuiyan-2024
+Cold thermoreceptor (TRPM8+),SPON1,bhuiyan-2024
+Cold thermoreceptor (TRPM8+),STUM,bhuiyan-2024
+Cold thermoreceptor (TRPM8+),GPR26,bhuiyan-2024
+C-LTMR (TAFA4+),GREM1,bhuiyan-2024
+C-LTMR (TAFA4+),POU6F2,bhuiyan-2024
+C-LTMR (TAFA4+),KCNJ6,bhuiyan-2024
+C-LTMR (TAFA4+),SAMD5,bhuiyan-2024
+C-LTMR (TAFA4+),CDH9,bhuiyan-2024
+C-LTMR (TAFA4+),TAFA4,bhuiyan-2024
+Injured neuron (ATF3+),ATF3,bhuiyan-2024
+Injured neuron (ATF3+),UCN,bhuiyan-2024
+Injured neuron (ATF3+),FLRT3,bhuiyan-2024
+Injured neuron (ATF3+),STAR,bhuiyan-2024
+Injured neuron (ATF3+),SDC1,bhuiyan-2024
+Injured neuron (ATF3+),CARTPT,bhuiyan-2024
+Satellite glia,FABP7,avraham-2022
+Satellite glia,CDH19,avraham-2022
+Satellite glia,KCNJ3,avraham-2022
+Satellite glia,QRFPR,avraham-2022
+Satellite glia,MMD2,avraham-2022
+Myelinating Schwann cell,PRX,avraham-2022
+Myelinating Schwann cell,MPZ,bhuiyan-2024
+Myelinating Schwann cell,NCMAP,avraham-2022
+Myelinating Schwann cell,DRP2,avraham-2022
+Myelinating Schwann cell,CDH7,avraham-2022
+Myelinating Schwann cell,MAG,avraham-2022
+Non-myelinating Schwann cell,SCN7A,bhuiyan-2024
+Non-myelinating Schwann cell,IL34,avraham-2022
+Non-myelinating Schwann cell,MYO1E,avraham-2022
+Non-myelinating Schwann cell,CNKSR3,avraham-2022
+Non-myelinating Schwann cell,LRRC8B,avraham-2022
+Fibroblast,DCN,bhuiyan-2024
+Fibroblast,PDGFRA,bhuiyan-2024
+Fibroblast,SNED1,bhuiyan-2024
+Fibroblast,EBF2,bhuiyan-2024
+Fibroblast,BICC1,bhuiyan-2024
+Fibroblast,COL1A1,avraham-2022
+Endothelial,VWF,bhuiyan-2024
+Endothelial,FLT1,bhuiyan-2024
+Endothelial,EGFL7,bhuiyan-2024
+Endothelial,EMCN,bhuiyan-2024
+Endothelial,CLDN5,bhuiyan-2024
+Endothelial,ERG,bhuiyan-2024
+Pericyte / smooth muscle,NOTCH3,bhuiyan-2024
+Pericyte / smooth muscle,RGS5,bhuiyan-2024
+Pericyte / smooth muscle,MYH11,bhuiyan-2024
+Pericyte / smooth muscle,ACTA2,bhuiyan-2024
+Pericyte / smooth muscle,ABCC9,bhuiyan-2024
+Macrophage,CD163,avraham-2022
+Macrophage,MRC1,avraham-2022
+Macrophage,CSF1R,bhuiyan-2024
+Macrophage,F13A1,bhuiyan-2024
+Macrophage,STAB1,bhuiyan-2024
+T cell,CD2,avraham-2022
+T cell,CD3G,avraham-2022
+T cell,LCK,avraham-2022
+T cell,THEMIS,avraham-2022
+T cell,IL7R,avraham-2022
+T cell,CD96,avraham-2022

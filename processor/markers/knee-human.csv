@@ -1,0 +1,77 @@
+cell_type,gene,source
+Chondrocyte (effector),SNORC,ji-2019
+Chondrocyte (effector),CLEC3A,ji-2019
+Chondrocyte (effector),CYTL1,ji-2019
+Chondrocyte (effector),CHAD,ji-2019
+Chondrocyte (effector),CNMD,ji-2019
+Chondrocyte (effector),SERPINA5,ji-2019
+Chondrocyte (prehypertrophic),SRPX2,ji-2019
+Chondrocyte (prehypertrophic),AOC2,ji-2019
+Chondrocyte (prehypertrophic),SOX11,ji-2019
+Chondrocyte (prehypertrophic),GALNT16,ji-2019
+Chondrocyte (prehypertrophic),GOLGA7B,ji-2019
+Chondrocyte (prehypertrophic),PART1,ji-2019
+Chondrocyte (hypertrophic),COL10A1,ji-2019
+Chondrocyte (hypertrophic),IBSP,ji-2019
+Chondrocyte (hypertrophic),BHLHE41,ji-2019
+Synovial fibroblast (lining PRG4+),PRG4,chou-2020
+Synovial fibroblast (lining PRG4+),CD55,chou-2020
+Synovial fibroblast (lining PRG4+),HBEGF,chou-2020
+Synovial fibroblast (lining PRG4+),HAS1,chou-2020
+Synovial fibroblast (lining PRG4+),DEFB1,chou-2020
+Synovial fibroblast (lining PRG4+),CLIC5,zhang-2019
+Synovial fibroblast (lining PRG4+),ITGB8,zhang-2019
+Synovial fibroblast (sublining),CXCL12,chou-2020
+Synovial fibroblast (sublining),IGF1,chou-2020
+Synovial fibroblast (sublining),MFAP5,chou-2020
+Synovial fibroblast (sublining),COL14A1,chou-2020
+Synovial fibroblast (sublining),CCN5,chou-2020
+Macrophage (synovial),C1QA,chou-2020
+Macrophage (synovial),C1QB,chou-2020
+Macrophage (synovial),FOLR2,chou-2020
+Macrophage (synovial),MARCO,chou-2020
+Macrophage (synovial),LYVE1,chou-2020
+Macrophage (synovial),CD163,chou-2020
+Macrophage (synovial),VSIG4,chou-2020
+Dendritic cell (CD1C+),CD1C,chou-2020
+Dendritic cell (CD1C+),CLEC10A,chou-2020
+Dendritic cell (CD1C+),PKIB,chou-2020
+Dendritic cell (CD1C+),CD1E,chou-2020
+T cell,CD2,chou-2020
+T cell,CD3D,chou-2020
+T cell,CD3E,chou-2020
+T cell,CD3G,chou-2020
+T cell,LCK,chou-2020
+B cell,MS4A1,zhang-2019
+B cell,CD19,zhang-2019
+B cell,CXCR5,zhang-2019
+B cell,RALGPS2,zhang-2019
+Plasma cell,MZB1,chou-2020
+Plasma cell,JCHAIN,chou-2020
+Plasma cell,DERL3,chou-2020
+Plasma cell,TNFRSF17,chou-2020
+Plasma cell,FKBP11,chou-2020
+Mast cell,TPSAB1,chou-2020
+Mast cell,CPA3,chou-2020
+Mast cell,HDC,chou-2020
+Mast cell,KIT,chou-2020
+Mast cell,RGS13,chou-2020
+Mast cell,SLC18A2,chou-2020
+Endothelial,PLVAP,chou-2020
+Endothelial,EMCN,chou-2020
+Endothelial,VWF,chou-2020
+Endothelial,CLEC14A,chou-2020
+Endothelial,ECSCR,chou-2020
+Endothelial,CDH5,chou-2020
+Pericyte / smooth muscle,RGS5,chou-2020
+Pericyte / smooth muscle,ACTA2,chou-2020
+Pericyte / smooth muscle,NOTCH3,chou-2020
+Pericyte / smooth muscle,MYH11,chou-2020
+Pericyte / smooth muscle,PPP1R14A,chou-2020
+Adipocyte,ADIPOQ,emont-2022
+Adipocyte,PLIN1,emont-2022
+Adipocyte,GPAM,emont-2022
+Adipocyte,AQP7,emont-2022
+Adipocyte,PLIN4,emont-2022
+Adipocyte,SLC19A3,emont-2022
+Adipocyte,GPD1,emont-2022
