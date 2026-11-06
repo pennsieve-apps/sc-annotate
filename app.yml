@@ -147,7 +147,7 @@ inputs:
     formats:
       - format_3590
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
     placement: subfolder
     required: true
   - name: reference
@@ -159,7 +159,7 @@ inputs:
     formats:
       - format_3590
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
       - text/csv
       - application/json
       - application/octet-stream
@@ -181,7 +181,7 @@ outputs:
     formats:
       - format_3590
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
       - application/json
   - name: labels
     description: labels.csv (sample_id, obs_id, cluster, cell_type, cell_type_score), provenance.json.
@@ -196,10 +196,12 @@ outputs:
       scanvi/ when scANVI ran (model.pt for scvi-tools, weights.pt + setup.json for reuse here),
       provenance.json. Link it to the reference input of a later run or of cell2location.
     mediaTypes:
-      - application/x-hdf5
+      - "application/x-hdf5; profile=anndata"
       - text/csv
       - application/json
       - application/octet-stream
+    formats:
+      - format_3590
   - name: annotation
     description: >-
       summary.json, cell_types_by_sample.csv (sample_id, cell_type, n_obs, fraction),
