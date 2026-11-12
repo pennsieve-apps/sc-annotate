@@ -1,5 +1,6 @@
 cff-version: "1.2.0"
-message: If you use this app, please cite it and the works it builds on, listed under references.
+message: >-
+  If you use this app, please cite the work it implements (preferred-citation), this release, and Pennsieve (RRID:SCR_021677); the other works it builds on are listed under references.
 type: software
 title: Single-cell Cell Typing (sc-annotate)
 abstract: Cell types for single-cell and single-nucleus RNA-seq. Transfers labels from a labelled
@@ -27,6 +28,36 @@ keywords:
 - neuroscience
 - pain
 - musculoskeletal
+# The work this app implements; the release report's "How to cite" puts it first.
+preferred-citation:
+  type: article
+  title: Probabilistic harmonization and annotation of single-cell transcriptomics data with deep generative models
+  authors:
+  - family-names: Xu
+    given-names: Chenling
+  - family-names: Lopez
+    given-names: Romain
+  - family-names: Mehlman
+    given-names: Edouard
+  - family-names: Regier
+    given-names: Jeffrey
+  - family-names: Jordan
+    given-names: Michael I
+  - family-names: Yosef
+    given-names: Nir
+  year: 2021
+  journal: Molecular Systems Biology
+  volume: 17
+  issue: '1'
+  start: e9620
+  doi: 10.15252/msb.20209620
+  identifiers:
+  - type: other
+    value: pmid:33491336
+    description: PubMed ID
+  - type: other
+    value: pmcid:PMC7829634
+    description: PubMed Central ID
 references:
 - type: article
   title: Best practices for single-cell analysis across modalities
