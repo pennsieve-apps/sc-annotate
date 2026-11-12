@@ -23,9 +23,6 @@ application:
     - cell-typing
     - label-transfer
     - reference-mapping
-    - neuroscience
-    - pain
-    - musculoskeletal
 runtime:
   # Shared by both variants (below); these are the cpu variant's values. Measured in the linux/amd64
   # image under emulation on an M-series Mac (README "Runtime"): markers mode on the C2 DRG demo
