@@ -25,9 +25,6 @@ keywords:
 - cell-typing
 - label-transfer
 - reference-mapping
-- neuroscience
-- pain
-- musculoskeletal
 # The work this app implements; the release report's "How to cite" puts it first.
 preferred-citation:
   type: article
